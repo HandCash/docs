@@ -3,7 +3,6 @@ title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
   - shell
-  - ruby
   - python
   - javascript
 
@@ -19,41 +18,112 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Welcome to the HandCash Handle API! You can use our API to send Bitcoin Cash using $handles, and improving the UX in your applications.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Different endpoints are available depending of your use:
 
-# Authentication
+* **Mainnet**: hand-cash-server.herokuapp.com/api/
+* **Testnet**: hand-cash-server-dev.herokuapp.com/api/
 
-> To authorize, use this code:
 
-```ruby
-require 'kittn'
+# All about the $handles
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
+Handles are user-friendly alias to refer to a receiving address. Or more specifically, to a wallet.
+
+* Each handle is linked to a wallet hash. Only the owner of the wallet can perform write operations.
+* Each time you get the receiving address of a handle, the wallet generates a new address.
+
+![Handles components interaction](Handles_components_interaction.png)
+
+
+
+This endpoint retrieves the current receiving address associated with the given $handle.
+
+### HTTP Request
+
+`GET /receivingAddress/<handle>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+handle | The handle we want to get the receiving address.
+
+
+# Get address by $handle
+
+
+> To get the current address, use this code:
+
 
 ```python
-import kittn
+# Python 3
+import urllib.request
+import json
 
-api = kittn.authorize('meowmeowmeow')
+RECEIVING_ADDRESS_ENDPOINT = 'http://hand-cash-server-dev.herokuapp.com/api/receivingAddress'
+HANDLE = 'apagut'
+
+req = urllib.request.Request(f'{RECEIVING_ADDRESS_ENDPOINT}/{HANDLE}')
+with urllib.request.urlopen(req) as response:
+   data = json.loads(response.read().decode())
+   print(f'Response: {data}')
+   print(f'To send money to ${HANDLE} use the base58 address: {data["receivingAddress"]}')
+
 ```
 
 ```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl https://hand-cash-server-dev.herokuapp.com/api/receivingAddress/apagut
 ```
 
 ```javascript
-const kittn = require('kittn');
+var handle = 'apagut';
+var req = new XMLHttpRequest();
+req.onreadystatechange = function() {
+    if (req.readyState === 4) {
+        var response = req.responseText;
+        var json = JSON.parse(response);
+        alert('To send money to ' + handle + ' use the base58 address: ' + json['receivingAddress']);
+    }
+};
 
-let api = kittn.authorize('meowmeowmeow');
+req.open('GET', 'http://hand-cash-server.herokuapp.com/api/receivingAddress/' + handle);
+req.send(null);
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+
+> The above command returns JSON responses like this:
+
+```json
+
+{"receivingAddress": "mq6nzgYzJw8zChBXw4Tvpc657KUoEjd6Ti", "publicKey": "023b0d20b09390881b182a74d5b2e2287a316c514ef22d2700d3d61178e156df8d"}
+
+```
+
+This endpoint retrieves the current receiving address associated with the given $handle.
+
+### HTTP Request
+
+`GET /receivingAddress/<handle>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+handle | The handle we want to get the receiving address.
+
+### HTTP Response
+
+This endpoint returns a JSON with the following fields.
+
+
+Parameter | Description
+--------- | -----------
+receivingAddress | The base58 address associated with the current handle.
+publicKey | The public key associated with the address.
+
 
 Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
 
