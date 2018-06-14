@@ -26,7 +26,7 @@ You can view code examples in the dark area to the right, and you can switch the
 Different endpoints are available depending of your environment:
 
 * **Testnet**: `test-api.handcash.io/api/`
-* **Mainnet**: `available on June 15th`
+* **Mainnet**: `api.handcash.io/api/`
 
 
 # All about the $handles
